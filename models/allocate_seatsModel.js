@@ -6,7 +6,7 @@ const allocateSeatsModel = {
    * Adds any missing columns (like isAllocated) if they are not present.
    */
   async ensureTableExists() {
-    // Define the query to create the table with the new field isAllocated
+    // Define the query to create the table
     const createTableQuery = `
       CREATE TABLE IF NOT EXISTS seats_data (
         seatId INT NOT NULL PRIMARY KEY,
@@ -20,32 +20,56 @@ const allocateSeatsModel = {
       );
     `;
 
-    // Define the query to add the column if it doesn't exist
+    // Query to check if the column exists
+    const checkColumnQuery = `
+      SELECT COUNT(*) AS columnExists
+      FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = DATABASE() 
+      AND TABLE_NAME = 'seats_data'
+      AND COLUMN_NAME = 'isAllocated';
+    `;
+
+    // Query to add the column if it doesn't exist
     const addColumnQuery = `
       ALTER TABLE seats_data
-      ADD COLUMN IF NOT EXISTS isAllocated BOOLEAN DEFAULT FALSE;
+      ADD COLUMN isAllocated BOOLEAN DEFAULT FALSE;
     `;
 
     try {
-      // Create table if it doesn't exist
+      // Create the table if it doesn't exist
       await new Promise((resolve, reject) => {
         db.query(createTableQuery, (err, result) => {
           if (err) {
             reject(new Error('Error creating table: ' + err.message));
+          } else {
+            resolve(result);
           }
-          resolve(result);
         });
       });
 
-      // Add the isAllocated column if it doesn't exist
-      await new Promise((resolve, reject) => {
-        db.query(addColumnQuery, (err, result) => {
+      // Check if the isAllocated column exists
+      const columnCheck = await new Promise((resolve, reject) => {
+        db.query(checkColumnQuery, (err, results) => {
           if (err) {
-            reject(new Error('Error adding isAllocated column: ' + err.message));
+            reject(new Error('Error checking column existence: ' + err.message));
+          } else {
+            resolve(results[0].columnExists);
           }
-          resolve(result);
         });
       });
+
+      // Add the column if it doesn't exist
+      if (columnCheck === 0) {
+        await new Promise((resolve, reject) => {
+          db.query(addColumnQuery, (err, result) => {
+            if (err) {
+              reject(new Error('Error adding isAllocated column: ' + err.message));
+            } else {
+              resolve(result);
+            }
+          });
+        });
+      }
     } catch (error) {
       console.error('Error ensuring table exists:', error);
       throw error;
@@ -74,13 +98,12 @@ const allocateSeatsModel = {
       seatData.isAllocated || false, // Default to false if not provided
     ];
 
-    // Return a Promise for handling the query asynchronously
     return new Promise((resolve, reject) => {
       db.query(query, values, (err, result) => {
         if (err) {
           reject(new Error('Error inserting data: ' + err.message));
         } else {
-          resolve(result); // Return the query result
+          resolve(result);
         }
       });
     });
