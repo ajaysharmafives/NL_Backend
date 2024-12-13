@@ -5,9 +5,10 @@ import userRoutes from './routes/userRoutes.js';
 import updateSeatRoutes from './routes/update_seatRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import allocate_seatRoutes from './routes/allocate_seatRoutes.js'
+import update_total_seats from './routes/update_totalseatRoutes.js'
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -26,6 +27,8 @@ app.use('/api/seats', updateSeatRoutes);
 app.use('/api/auth', authRoutes); // Use the auth routes
 
 app.use('/api/seatdetails', allocate_seatRoutes);
+
+app.use('/api/total_seats', update_total_seats);
 
 // Define a route for "Hello, World!"
 app.get('/', (req, res) => {

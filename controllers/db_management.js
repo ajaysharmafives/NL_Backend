@@ -1,0 +1,3 @@
+class database_manage{
+    
+}
