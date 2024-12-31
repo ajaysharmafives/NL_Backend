@@ -6,6 +6,7 @@ import updateSeatRoutes from './routes/update_seatRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import allocate_seatRoutes from './routes/allocate_seatRoutes.js'
 import update_total_seats from './routes/update_totalseatRoutes.js'
+import fetch_all_seats_data from './routes/fetch_seats_Routes.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,8 @@ app.use('/api/auth', authRoutes); // Use the auth routes
 app.use('/api/seatdetails', allocate_seatRoutes);
 
 app.use('/api/total_seats', update_total_seats);
+
+app.use('/api/seatdata',fetch_all_seats_data)
 
 // Define a route for "Hello, World!"
 app.get('/', (req, res) => {
