@@ -16,23 +16,25 @@ const allocateSeatsModel = {
         studentNumber VARCHAR(15) NOT NULL,
         subscriptionStartDate DATE NOT NULL,
         subscriptionEndDate DATE NOT NULL,
-        isAllocated BOOLEAN DEFAULT FALSE
+        isAllocated BOOLEAN DEFAULT FALSE,
+        subscriptionStatus BOOLEAN DEFAULT FALSE
       );
     `;
 
-    // Query to check if the column exists
+    // Query to check if the columns exist
     const checkColumnQuery = `
       SELECT COUNT(*) AS columnExists
       FROM INFORMATION_SCHEMA.COLUMNS
       WHERE TABLE_SCHEMA = DATABASE() 
       AND TABLE_NAME = 'seats_data'
-      AND COLUMN_NAME = 'isAllocated';
+      AND (COLUMN_NAME = 'isAllocated' OR COLUMN_NAME = 'subscriptionStatus');
     `;
 
-    // Query to add the column if it doesn't exist
+    // Query to add the columns if they don't exist
     const addColumnQuery = `
       ALTER TABLE seats_data
-      ADD COLUMN isAllocated BOOLEAN DEFAULT FALSE;
+      ADD COLUMN isAllocated BOOLEAN DEFAULT FALSE,
+      ADD COLUMN subscriptionStatus BOOLEAN DEFAULT FALSE;
     `;
 
     try {
@@ -47,7 +49,7 @@ const allocateSeatsModel = {
         });
       });
 
-      // Check if the isAllocated column exists
+      // Check if the isAllocated or subscriptionStatus columns exist
       const columnCheck = await new Promise((resolve, reject) => {
         db.query(checkColumnQuery, (err, results) => {
           if (err) {
@@ -58,12 +60,12 @@ const allocateSeatsModel = {
         });
       });
 
-      // Add the column if it doesn't exist
+      // Add the columns if they don't exist
       if (columnCheck === 0) {
         await new Promise((resolve, reject) => {
           db.query(addColumnQuery, (err, result) => {
             if (err) {
-              reject(new Error('Error adding isAllocated column: ' + err.message));
+              reject(new Error('Error adding columns: ' + err.message));
             } else {
               resolve(result);
             }
@@ -83,8 +85,8 @@ const allocateSeatsModel = {
    */
   create(seatData) {
     const query = `
-      INSERT INTO seats_data (seatId, userId, seatName, studentName, studentNumber, subscriptionStartDate, subscriptionEndDate, isAllocated)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO seats_data (seatId, userId, seatName, studentName, studentNumber, subscriptionStartDate, subscriptionEndDate, isAllocated, subscriptionStatus)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -96,6 +98,7 @@ const allocateSeatsModel = {
       seatData.subscriptionStartDate,
       seatData.subscriptionEndDate,
       seatData.isAllocated || false, // Default to false if not provided
+      seatData.subscriptionStatus || false, // Fix typo here
     ];
 
     return new Promise((resolve, reject) => {

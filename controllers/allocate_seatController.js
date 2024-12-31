@@ -15,6 +15,7 @@ const allocateSeatController = {
         subscriptionStartDate,
         subscriptionEndDate,
         isAllocated, // New field
+        subscriptionStatus
       } = req.body;
 
       // Input validation
@@ -25,7 +26,8 @@ const allocateSeatController = {
         !studentName ||
         !studentNumber ||
         !subscriptionStartDate ||
-        !subscriptionEndDate
+        !subscriptionEndDate ||
+         subscriptionStatus
       ) {
         return res.status(400).json({ message: 'All fields are required except isAllocated' });
       }
@@ -40,6 +42,7 @@ const allocateSeatController = {
         subscriptionStartDate,
         subscriptionEndDate,
         isAllocated: isAllocated !== undefined ? isAllocated : false, // Default to false if not provided
+        subscriptionStatus: subscriptionStatus!==undefined ? subscriptionStatus :false,
       });
 
       // Send response
@@ -55,6 +58,7 @@ const allocateSeatController = {
           subscriptionStartDate,
           subscriptionEndDate,
           isAllocated: isAllocated !== undefined ? isAllocated : false,
+          subscriptionStatus: subscriptionStatus!==undefined ? subscriptionStatus :false,
         },
       });
     } catch (error) {
