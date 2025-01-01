@@ -1,69 +1,74 @@
-import { getSeatsByUserId, getTotalUsersSeats } from '../models/fetch_seatsModel.js';
+import { db } from '../config/db.js';
 
-export const fetchSeats = (req, res) => {
-    const userId = req.query.userId || req.body.userId; // Retrieve userId from query or body
+export const fetchSeatsData = async (req, res) => {
+    // Access userId from req.body since it's a POST request
+    const { userId } = req.body;
 
     // Validate userId is provided
     if (!userId) {
         return res.status(400).json({ error: 'userId is required' });
     }
 
-    console.log('Fetching seats for userId:', userId);
-    
-    getTotalUsersSeats(userId, (err, totalUsersSeats) => {
-        if (err) {
-            console.error('Error fetching total_users_Seats:', err);
-            return res.status(500).json({ error: 'Failed to fetch total_users_Seats' });
-        }
+    try {
+        // Step 1: Fetch all seats data for the given userId
+        const query = `SELECT * FROM seats_data WHERE userId = ?`;
+        db.query(query, [userId], (err, results) => {
+            if (err) {
+                console.error('Error fetching seats data:', err);
+                return res.status(500).json({ error: 'Failed to fetch seats data' });
+            }
 
+            if (results.length === 0) {
+                return res.status(404).json({
+                    total_Allocated_Seats: 0,
+                    total_seats: 0,
+                    total_nonAllocated_seats: 0,
+                    seats: [],
+                });
+            }
 
-    getSeatsByUserId(userId, (err, seats) => {
-        if (err) {
-            console.error('Error fetching seats:', err);
-            return res.status(500).json({ error: 'Failed to fetch seats' });
-        }
+            // Step 2: Calculate the subscription status and group the data
+            const totalSeats = results.length;
+            let totalAllocatedSeats = 0;
+            let totalNonAllocatedSeats = 0;
 
-        if (seats.length === 0) {
-            console.log('No seats found for userId:', userId);
-            return res.status(404).json({
-                totalSeats: 0,
-                seats: [],
-                message: 'No seats found for the given userId.',
+            const currentDate = new Date(); // Current date for subscription status calculation
+
+            const updatedSeats = results.map((seat) => {
+                // Calculate subscription status (if the current date is past subscriptionEndDate)
+                const subscriptionEndDate = new Date(seat.subscriptionEndDate);
+                const subscriptionStatus = currentDate >= subscriptionEndDate;
+
+                // Update counters based on allocation status
+                if (seat.isAllocated === 1) {
+                    totalAllocatedSeats++;
+                } else {
+                    totalNonAllocatedSeats++;
+                }
+
+                return {
+                    seatId: seat.seatId,
+                    userId: seat.userId,
+                    seatName: seat.seatName,
+                    studentName: seat.studentName,
+                    studentNumber: seat.studentNumber,
+                    subscriptionStartDate: seat.subscriptionStartDate,
+                    subscriptionEndDate: seat.subscriptionEndDate,
+                    isAllocated: seat.isAllocated,
+                    subscriptionStatus: subscriptionStatus, // Add subscription status to the seat data
+                };
             });
-        }
 
-        // Add subscriptionStatus without modifying original subscription dates
-        const updatedSeats = seats.map(seat => {
-            const currentDate = new Date(); // Get current date and time
-            const subscriptionEndDate = new Date(seat.subscriptionEndDate); // Parse subscriptionEndDate as Date object
-
-            // Log current date and subscription end date for debugging
-            console.log(`Seat ID: ${seat.seatId}`);
-            console.log(`Current Date: ${currentDate}`);
-            console.log(`Subscription End Date: ${subscriptionEndDate}`);
-
-            // Calculate subscription status: true if current date is on or after subscription end date
-            const subscriptionStatus = currentDate >= subscriptionEndDate;
-
-            // Log the comparison result
-            console.log(`Subscription Status for Seat ID ${seat.seatId}: ${subscriptionStatus}`);
-
-            // Return a new object with all original properties and calculated subscriptionStatus
-            return {
-                ...seat,
-                subscriptionStatus,
-            };
+            // Step 3: Return the formatted response
+            return res.status(200).json({
+                total_Allocated_Seats: totalAllocatedSeats,
+                total_seats: totalSeats,
+                total_nonAllocated_seats: totalNonAllocatedSeats,
+                seats: updatedSeats, // Return the updated seats with subscription status
+            });
         });
-
-        const totalSeats = updatedSeats.length;
-        console.log('Seats retrieved:', updatedSeats);
-
-        // Return the updated response with subscriptionStatus
-        return res.status(200).json({
-            totalSeats,
-            total_users_Seats: totalUsersSeats,
-            seats: updatedSeats,
-        });
-    });
-});
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };

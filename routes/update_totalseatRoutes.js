@@ -1,6 +1,6 @@
 // update_seatRoutes.js
 import express from 'express';
-import { updateTotalSeats } from '../controllers/userController.js'; // Importing the controller
+import { updateTotalSeats } from '../controllers/generate_dynamicSeats_controller.js'; // Importing the controller
 
 const router = express.Router();
 
