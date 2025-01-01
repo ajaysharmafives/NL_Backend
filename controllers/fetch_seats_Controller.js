@@ -1,4 +1,4 @@
-import { getSeatsByUserId } from '../models/fetch_seatsModel.js';
+import { getSeatsByUserId, getTotalUsersSeats } from '../models/fetch_seatsModel.js';
 
 export const fetchSeats = (req, res) => {
     const userId = req.query.userId || req.body.userId; // Retrieve userId from query or body
@@ -9,6 +9,13 @@ export const fetchSeats = (req, res) => {
     }
 
     console.log('Fetching seats for userId:', userId);
+    
+    getTotalUsersSeats(userId, (err, totalUsersSeats) => {
+        if (err) {
+            console.error('Error fetching total_users_Seats:', err);
+            return res.status(500).json({ error: 'Failed to fetch total_users_Seats' });
+        }
+
 
     getSeatsByUserId(userId, (err, seats) => {
         if (err) {
@@ -54,7 +61,9 @@ export const fetchSeats = (req, res) => {
         // Return the updated response with subscriptionStatus
         return res.status(200).json({
             totalSeats,
+            total_users_Seats: totalUsersSeats,
             seats: updatedSeats,
         });
     });
+});
 };
