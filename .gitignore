@@ -23,7 +23,7 @@ out/
 # Cache
 .cache/
 
-.NL_backend_API.session.sql
+NL_backend_API.session.sql
 
 # Coverage
 coverage/
