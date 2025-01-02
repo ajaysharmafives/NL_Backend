@@ -102,7 +102,7 @@ export const updateTotalSeats = async (req, res) => {
         });
     } catch (err) {
         // Handle any errors that occur during the process
-        console.error(err);
+        console.error(err); 
         res.status(500).json({ error: 'Internal server error' });
     }
 };
