@@ -4,7 +4,6 @@ import { testConnection } from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import updateSeatRoutes from './routes/update_seatRoutes.js';
 import authRoutes from './routes/authRoutes.js';
-import allocate_seatRoutes from './routes/allocate_seatRoutes.js'
 import update_total_seats from './routes/update_totalseatRoutes.js'
 import fetch_all_seats_data from './routes/fetch_seats_Routes.js'
 
@@ -27,7 +26,6 @@ app.use('/api/seats', updateSeatRoutes);
 
 app.use('/api/auth', authRoutes); // Use the auth routes
 
-app.use('/api/seatdetails', allocate_seatRoutes);
 
 app.use('/api/total_seats', update_total_seats);
 
