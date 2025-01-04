@@ -16,7 +16,8 @@ const updateSeatsModel = {
         studentNumber = ?, 
         subscriptionStartDate = ?, 
         subscriptionEndDate = ?, 
-        isAllocated = ? -- Added the new field here
+        isAllocated = ?, 
+        member_fees = ?
       WHERE seatId = ?;
     `;
 
@@ -28,6 +29,7 @@ const updateSeatsModel = {
       seatData.subscriptionStartDate, // Update subscriptionStartDate
       seatData.subscriptionEndDate,   // Update subscriptionEndDate
       seatData.isAllocated,      // Update isAllocated
+      seatData.member_fees,
       seatData.seatId,           // Use seatId to identify which record to update
     ];
 

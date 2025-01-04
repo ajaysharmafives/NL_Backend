@@ -13,6 +13,7 @@ const updateSeatsController = {
         subscriptionStartDate,
         subscriptionEndDate,
         isAllocated, // Added new field
+        member_fees,
       } = req.body;
 
       // Input validation
@@ -23,7 +24,8 @@ const updateSeatsController = {
         !studentName ||
         !studentNumber ||
         !subscriptionStartDate ||
-        !subscriptionEndDate
+        !subscriptionEndDate ||
+        !member_fees
       ) {
         return res.status(400).json({ message: 'All fields are required except isAllocated' });
       }
@@ -38,6 +40,7 @@ const updateSeatsController = {
         subscriptionStartDate,
         subscriptionEndDate,
         isAllocated: isAllocated !== undefined ? isAllocated : false, // Default to false if not provided
+        member_fees,
       });
 
       if (result.affectedRows === 0) {
@@ -56,6 +59,7 @@ const updateSeatsController = {
           subscriptionStartDate,
           subscriptionEndDate,
           isAllocated: isAllocated !== undefined ? isAllocated : false, // Include in the response
+          member_fees, 
         },
       });
     } catch (error) {

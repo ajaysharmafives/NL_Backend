@@ -20,7 +20,8 @@ export const updateTotalSeats = async (req, res) => {
                 subscriptionStartDate DATETIME,
                 subscriptionEndDate DATETIME,
                 isAllocated TINYINT DEFAULT 0,
-                subscriptionStatus TINYINT DEFAULT 0
+                subscriptionStatus TINYINT DEFAULT 0,
+                member_fees INT NOT NULL  
             );
         `;
 
@@ -77,13 +78,14 @@ export const updateTotalSeats = async (req, res) => {
                             null,
                             0,
                             0,
+                            '',
                         ]);
                     }
 
                     // Step 6: Insert the generated empty seats into the database
                     const insertQuery = `
                         INSERT INTO seats_data 
-                        (seatId, userId, seatName, studentName, studentNumber, subscriptionStartDate, subscriptionEndDate, isAllocated, subscriptionStatus)
+                        (seatId, userId, seatName, studentName, studentNumber, subscriptionStartDate, subscriptionEndDate, isAllocated, subscriptionStatus, member_fees)
                         VALUES ?`;
 
                     db.query(insertQuery, [emptySeats], (insertErr, results) => {
