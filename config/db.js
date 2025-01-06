@@ -19,7 +19,6 @@ dotenv.config();
 // });
 
 
-//Create a MySQL connection pool
 const db = mysql.createPool({
     host: 'mysql-3be60ee0-ajaysharmawork80-nlpro.f.aivencloud.com',
     user: 'avnadmin',

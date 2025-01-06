@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import update_total_seats from './routes/update_totalseatRoutes.js'
 import fetch_all_seats_data from './routes/fetch_seats_Routes.js'
 import fetch_userdetails from './routes/fetch_user_details_Routes.js'
+import fetchExpiredSubscriptions from './routes/expired_seatsRoutes.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,6 +34,8 @@ app.use('/api/total_seats', update_total_seats);
 app.use('/api/seatdata',fetch_all_seats_data);
 
 app.use('/api/userData', fetch_userdetails);
+
+app.use('/api',fetchExpiredSubscriptions);
 
 
 
