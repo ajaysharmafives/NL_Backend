@@ -1,4 +1,4 @@
-import { db } from '../config/db.js';
+    import { db } from '../config/db.js';
 
 export const updateTotalSeats = async (req, res) => {
     const { userId, total_seats } = req.body;
@@ -78,7 +78,7 @@ export const updateTotalSeats = async (req, res) => {
                             null,
                             0,
                             0,
-                            '',
+                            0,
                         ]);
                     }
 
