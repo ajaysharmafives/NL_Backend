@@ -3,12 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-    // console.log('Environment Variables:', {
-    //     HOST: process.env.HOST,
-    //     USERNAME: process.env.MYUSERNAME,
-    //     PASSWORD: process.env.PASSWORD,
-    //     DATABASE: process.env.DATABASE,
-    // });
+   
 
 
 // const db = mysql.createPool({
@@ -23,8 +18,8 @@ const db = mysql.createPool({
     host: 'mysql-3be60ee0-ajaysharmawork80-nlpro.f.aivencloud.com',
     user: 'avnadmin',
     password: 'AVNS_Z6tbzUKogJuREW-791f',  // Use your MySQL password here if necessary
-    database: 'defaultdb',
-    port: '17489'  // Your database name
+    database: 'defaultdb'
+   
 });
 
 
