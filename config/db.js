@@ -18,8 +18,8 @@ const db = mysql.createPool({
     host: 'mysql-3be60ee0-ajaysharmawork80-nlpro.f.aivencloud.com',
     user: 'avnadmin',
     password: 'AVNS_Z6tbzUKogJuREW-791f',  // Use your MySQL password here if necessary
-    database: 'defaultdb'
-   
+    database: 'defaultdb',
+    port: '17489'  // Your database name
 });
 
 
