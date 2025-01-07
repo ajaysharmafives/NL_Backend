@@ -8,6 +8,7 @@ import update_total_seats from './routes/update_totalseatRoutes.js'
 import fetch_all_seats_data from './routes/fetch_seats_Routes.js'
 import fetch_userdetails from './routes/fetch_user_details_Routes.js'
 import fetchExpiredSubscriptions from './routes/expired_seatsRoutes.js'
+import fetchActiveMembersData from './routes/fetchActiveMembers_Routes.js' 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,7 +38,7 @@ app.use('/api/userData', fetch_userdetails);
 
 app.use('/api',fetchExpiredSubscriptions);
 
-
+app.use('/api/',fetchActiveMembersData);
 
 // Define a route for "Hello, World!"
 app.get('/', (req, res) => {
