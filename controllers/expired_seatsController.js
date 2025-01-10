@@ -39,6 +39,7 @@ export const fetchExpiredSubscriptions = async (req, res) => {
             // If there are no expired subscriptions
             if (expiredSeats.length === 0) {
                 return res.status(200).json({
+                    expiredSeats,
                     message: 'No expired subscriptions found for the given userId.',
                 });
             }
