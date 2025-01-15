@@ -31,22 +31,22 @@ export const fetchExpiredSubscriptions = async (req, res) => {
             const currentDate = new Date(); // Current date for subscription expiration check
 
             // Filter only the expired subscriptions
-            const expiredSeats = results.filter((seat) => {
+            const seats = results.filter((seat) => {
                 const subscriptionEndDate = new Date(seat.subscriptionEndDate);
                 return currentDate > subscriptionEndDate; // Only expired subscriptions
             });
 
             // If there are no expired subscriptions
-            if (expiredSeats.length === 0) {
+            if (seats.length === 0) {
                 return res.status(200).json({
-                    expiredSeats,
+                    seats,
                     message: 'No expired subscriptions found for the given userId.',
                 });
             }
 
             // Return only the expired seats
             return res.status(200).json({
-                expiredSeats,
+                seats
             });
         });
     } catch (err) {

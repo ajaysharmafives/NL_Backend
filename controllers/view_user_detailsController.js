@@ -18,7 +18,12 @@ export const fetch_user_seat_details = (req, res) => {
         }
 
         if (results.length === 0) {
-            return res.status(404).json({ message: 'No seat found for the given userId and seatId' });
+            
+            return res.status(404).json(
+                { seatDetails: [],
+                    message: 'No seats found, Contact Support Team',
+
+            });
         }
 
         res.status(200).json({ seatDetails: results[0] });
